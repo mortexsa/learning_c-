@@ -8,7 +8,7 @@ ZFraction::ZFraction(int const numerateur){
 		m_denominateur = 1;
 }
 ZFraction::ZFraction(int const numerateur, int const denominateur){
-	if(denominateur >= 0){
+	if(denominateur > 0){
 		if(denominateur != numerateur)
 		{
 			m_numerateur = numerateur;
@@ -59,21 +59,58 @@ void ZFraction::operator+=(ZFraction const& a)
 	if(m_denominateur == a.m_denominateur)
 	{
 		m_numerateur += a.m_numerateur;
-		result_pgcd = pgcd(m_numerateur,m_denominateur);
-		std::cout<<"le pgcd vaut : "<<pgcd<<" "<<std::endl;
 	}
 	else
 	{
-		m_numerateur = ((m_numerateur*a.m_denominateur)
-			+(m_denominateur*a.m_numerateur));
+		m_numerateur = ((m_numerateur*a.m_denominateur)+(m_denominateur*a.m_numerateur));
 		m_denominateur *= a.m_denominateur; 
-		result_pgcd = pgcd(m_numerateur,m_denominateur);
-		std::cout<<"le pgcd vaut : "<<pgcd<<" "<<std::endl;
 	}
+	result_pgcd = pgcd(m_numerateur,m_denominateur);
+	m_numerateur /= result_pgcd;
+	m_denominateur /= result_pgcd;
+
 }
 ZFraction operator+(ZFraction const& a, ZFraction const& b)
 {
 	ZFraction copie(a);
 	copie += b;
 	return copie;
+}
+void ZFraction::operator*=(ZFraction const& a)
+{
+	int result_pgcd;
+	m_numerateur *= a.m_numerateur;
+	m_denominateur *= a.m_denominateur;
+	result_pgcd = pgcd(m_numerateur,m_denominateur);
+	m_numerateur /= result_pgcd;
+	m_denominateur /= result_pgcd;
+
+}
+ZFraction operator*(ZFraction const& a, ZFraction const& b)
+{
+	ZFraction copie(a);
+	copie *= b;
+	return copie;
+}
+bool ZFraction::estPlusGrandQue(ZFraction const& b) const
+{
+	if((m_numerateur*b.m_denominateur) > (m_denominateur*b.m_numerateur) )
+		return true;
+	else
+		return false;
+}
+bool operator>(ZFraction const &a, ZFraction const& b) 
+{
+	return a.estPlusGrandQue(b);
+}
+bool ZFraction::estEgal(ZFraction const& b) const
+{
+	if((m_numerateur*b.m_denominateur) == (m_denominateur*b.m_numerateur) )
+		return true;
+	else
+		return false;
+}
+bool operator==(ZFraction const &a, ZFraction const& b) 
+{
+	return a.estEgal(b);
 }
